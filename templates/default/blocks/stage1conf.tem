@@ -1,0 +1,41 @@
+<div class="left">
+<form action="index.cgi" method="post">
+<p>{L_OPTIONS_SELECTED}</p>
+<table class="formtable" cellpadding="3" cellspacing="1">
+    <tr><th class="formhead" colspan="2">{L_OPTIONS_SHEET}</th></tr>
+    <tr>
+        <td class="formname">{L_OPTIONS_NAME}:</td>
+        <td class="formfield">***sheet***</td>
+    </tr>
+    <tr><th class="formhead padover" colspan="2">{L_OPTIONS_OUTOPT}</th></tr>
+    <tr>
+        <td class="formname">{L_OPTIONS_OUTT}:</td>
+        <td class="formfield">***format***</td>
+    </tr>
+    <tr>
+        <td class="formname">{L_OPTIONS_ZEBRA}:</td>
+        <td class="formfield">***zebra***</td>
+    </tr>
+    <tr><th class="formhead padover" colspan="2">{L_OPTIONS_SETOPT}</th></tr>
+    <tr>
+        <td class="formname">{L_OPTIONS_HEADERS}:</td>
+        <td class="formfield">***headers***</td>
+    </tr>
+    <tr>
+        <td class="formname">{L_OPTIONS_POPUPS}:</td>
+        <td class="formfield">***popups***</td>
+    </tr>
+</table>
+<table class="formtable" cellpadding="3" cellspacing="1">
+    <tr>
+        <td class="nextbox">
+            <input type="hidden" name="stage"  value="***stage***" />
+            <input type="hidden" name="bstage" value="1" />
+            <input type="hidden" name="uid"    value="***uid***" />
+            <input type="submit" name="back"  accesskey="P" value="{L_BACK}" />
+            <input type="submit" name="next"  accesskey="N" value="{L_NEXT}" />
+       </td> 
+    </tr>
+</table>
+</form>
+</div>

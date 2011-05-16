@@ -1,0 +1,1 @@
+<td class="headhot"><img src="templates/default/images/icons/toggle.png" width="16" height="16" class="toggle" onclick="toggleHeadRow(***row***)" alt="toggle"/></td>

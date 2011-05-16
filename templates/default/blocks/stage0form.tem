@@ -1,0 +1,102 @@
+<!-- javascript needed for ajax work -->
+<script type="text/javascript" src="templates/default/ajax.js"></script>
+<script type="text/javascript" src="templates/default/sprintf.js"></script>
+
+<!-- Div shown only when upload is in progress -->
+<div id="progress-div" style="display: none; width: 400px; margin: auto">
+    <fieldset>
+        <legend>Upload Progress</legend>
+        <div id="trough">
+            <div id="progbar" style="width: 0%"></div>
+        </div>
+        <div>Received <span id="received">0 bytes</span> of <span id="total">0 bytes</span> (<span id="percent">0</span>%)</div>
+    </fieldset>
+</div>
+
+<!-- Form for submissions -->
+<div class="left" id="upload-form" style="display: block; margin: auto">
+***error***
+<form id="uploadform" action="index.cgi?***sessid***" method="post" enctype="multipart/form-data" onsubmit="return startUpload()" >
+<p>{L_UPLOAD_SELECT}</p>
+    <table class="formtable" cellpadding="3" cellspacing="1">
+        <tr>
+            <td class="formname">{L_UPLOAD_FILE}:</td>
+            <td class="formfield"><input type="file" name="excelfile" size="80" /></td>
+        </tr>
+    </table>
+<table class="formtable" cellpadding="3" cellspacing="1">
+    <tr>
+        <td class="nextbox">
+            <input type="hidden" name="stage"  value="1" />
+            <input type="hidden" name="sessid" value="***sessid***" id="sessid" />
+            <input type="submit" name="upload" accesskey="N" value="{L_NEXT}" />
+        </td> 
+    </tr>
+</table>
+</form>
+</div>
+<div id="debug"></div>
+
+<script type="text/javascript">
+/* <![CDATA[ */
+// The code to hide the form, show the progress bar, and update the progress bar as
+// the upload proceeds. This is based on code dug up from around the net, as the
+// CGI upload hook documentation lacks in detail what it makes up for in opaqueness.
+// Much is based around http://www.tek-tips.com/viewthread.cfm?qid=1580695&page=1
+
+// a jquery-like function, a shortcut to document.getElementById
+function $(o) {
+        return document.getElementById(o);
+}
+
+// This function is called when submitting the form.
+function startUpload() {
+    // Hide the form an show the progress bar
+    $("upload-form").style.display = "none";
+    $("progress-div").style.display = "block";
+
+    window.setTimeout("getProgress()", 1000);
+    return true;
+}
+
+
+function humanise(bytes) {
+    if(bytes < 1024) {
+        return bytes + " Bytes";
+    } else if(bytes < 1048576) {
+        return sprintf("%d KB", bytes / 1024);
+    } else if(bytes < 1073741824) {
+        return sprintf("%.1f MB", bytes / 1048576);
+    } else {
+        return sprintf("%.1f GB", bytes / 1073741824);
+    }
+}
+
+
+function parseResp(req) {
+    var txt = req.responseText;
+
+    $("debug").innerHTML = "received from server: " + txt;
+
+    var parts = txt.split(":");
+    if (parts.length == 3) {
+        $("received").innerHTML = humanise(parts[0]);
+        $("total").innerHTML = humanise(parts[1]);
+        $("percent").innerHTML = parts[2];
+        $("progbar").style.width = parts[2] + "%";
+    }
+    // queue another request
+    window.setTimeout("getProgress()", 1000);
+}
+
+function getProgress() {
+    // create ajax request. rand is needed to prevent IE from caching
+    var url = "upload.cgi?sessid=" + $("sessid").value + "&rand=" + Math.floor(Math.random()*99999);
+    var onErrorFunc = function (status) { alert("AJAX error: "+status); };
+
+    var myAjax = new bsn.Ajax();
+    myAjax.makeRequest( url, "GET", parseResp, onErrorFunc );
+}
+
+/* ]]> */
+</script>

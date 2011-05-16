@@ -1,0 +1,19 @@
+<div class="left">
+<form action="index.cgi" method="post" onsubmit="return packPopups();">
+<p>{L_OUTPUT_CHECK}</p>
+<div class="right"><a href="#outbox"><img class="pathimg" src="templates/default/images/icons/jump.png" width="16" height="16" alt="jump" title="{L_OUTPUT_JUMP}" /></a></div>
+***showtable***
+<p>{L_OUTPUT_TABLE}</p>
+<div><textarea name="preview" id="outbox" cols="120" rows="30" style="white-space: nowrap; overflow: auto">***realtable***</textarea></div>
+<table class="formtable" cellpadding="3" cellspacing="1">
+    <tr>
+        <td class="nextbox">
+            <input type="hidden" name="stage"   value="5" />
+            <input type="hidden" name="bstage"  value="***pid***" />
+            <input type="hidden" name="uid"     value="***uid***" />
+            <input type="submit" name="back"    accesskey="P" value="{L_BACK}" />
+        </td> 
+    </tr>
+</table>
+</form>
+</div>

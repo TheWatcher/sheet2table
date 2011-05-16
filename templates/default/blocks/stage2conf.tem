@@ -1,0 +1,18 @@
+<div class="left">
+<form action="index.cgi" method="post">
+<p>{L_HEADERS_CONFIRM}</p>
+<div class="right"><a href="#controls"><img class="pathimg" src="templates/default/images/icons/jump.png" width="16" height="16" alt="jump" title="{L_CONTROL_JUMP}" /></a></div>
+***table***
+<table class="formtable" cellpadding="3" cellspacing="1">
+    <tr>
+        <td class="nextbox" id="controls">
+            <input type="hidden" name="stage" value="***stage***" />
+            <input type="hidden" name="bstage" value="2" />
+            <input type="hidden" name="uid"   value="***uid***" />
+            <input type="submit" name="back"  accesskey="P" value="{L_BACK}" />
+            <input type="submit" name="next"  accesskey="N" value="{L_NEXT}" />
+        </td> 
+    </tr>
+</table>
+</form>
+</div>

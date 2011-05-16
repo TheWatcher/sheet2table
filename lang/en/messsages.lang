@@ -1,0 +1,51 @@
+BACK                 = &lt; Prev
+NEXT                 = Next &gt;
+CONTROL_JUMP         = Jump to next
+
+UPLOAD_TITLE         = Convert an Excel Spreadsheet
+UPLOAD_LONGDESC      = This webapp allows you to convert a worksheet in an Excel spreadsheet into one of several table formats (HTML and MediaWiki markup are currently supported). Note that .xlsx files (workbooks saved from Excel 2007 or later) are supported, but this feature is experimental and may fail hilariously and spectacularly.
+UPLOAD_SELECT        = Select the excel file containing the worksheet you want to convert with the file box below. Once you have selected the file, hit next to continue.
+UPLOAD_FILE          = Excel file
+UPLOAD_ERR_NOFILE    = No excel file specified. Please select an excel file and try again.
+UPLOAD_ERR_NOEXT     = The specified file does not have an extension. Uploaded files must have a .xls or .xlsx extension to be processed.
+UPLOAD_ERR_BADEXT    = The specified file does not have a recognised extension. Uploaded files must have a .xls or .xlsx extension to be processed.
+UPLOAD_ERR_BADCOPY   = Unable to save the uploaded spreadsheet. The error reported by the OS was: ***error***
+UPLOAD_ERR_BADID     = The upload process has encountered a fatal error and must abort (bad internal ID encountered). Please report this!
+
+OPTIONS_TITLE        = Select the conversion options
+OPTIONS_LONGDESC     = Your spreadsheet has been uploaded and appears to be usable. Before the system can convert a spreadsheet to a table, it needs to be told which sheet to convert, what to convert it to, and which options to apply.
+OPTIONS_SELECT       = Please select the worksheet you want to convert, and the format that you want the table output to appear in. You may also optionally include the 'class="zebra"' attribute in the table definition to take advantage of automatic row colouring, and enable features to set headers and popups. 
+OPTIONS_SHEET        = Worksheet selection
+OPTIONS_NAME         = Worksheet name
+OPTIONS_OUTOPT       = Output options
+OPTIONS_OUTT         = Output format
+OPTIONS_ZEBRA        = Zebra table
+OPTIONS_SETOPT       = Extra features
+OPTIONS_HEADERS      = Set headers
+OPTIONS_POPUPS       = Set popups
+OPTIONS_ZEBNOTE      = Note: in order to take advantage of zebra tables, you must ensure that zebra.js has been loaded in the target page.
+OPTIONS_POPNOTE      = Note: in order to take advantage of popups, you must ensure that the TWPopup code has been loaded in the target page.
+OPTIONS_SELECTED     = Please review the settings you have made, and if you decide that you want to change any of them you can hit the Prev button. If you are happy with these settings, hit next to proceed to the next stage.
+OPTIONS_ZEBRA_ON     = <img class="inl" src="templates/default/images/icons/yes.png" alt="On" /> Zebra feature enabled: tables will be generated with the zebra class.
+OPTIONS_ZEBRA_OFF    = <img class="inl" src="templates/default/images/icons/no.png" alt="Off" /> Zebra feature disabled: tables will be generated without the zebra class.
+OPTIONS_HEADERS_ON   = <img class="inl" src="templates/default/images/icons/yes.png" alt="On" /> You will be prompted to choose which cells in the sheet should be shown as headers.
+OPTIONS_HEADERS_OFF  = <img class="inl" src="templates/default/images/icons/no.png" alt="Off" /> You will not be prompted to select header cells.
+OPTIONS_POPUPS_ON    = <img class="inl" src="templates/default/images/icons/yes.png" alt="On" /> You will be prompted to set up popup anchor and body columns.
+OPTIONS_POPUPS_OFF   = <img class="inl" src="templates/default/images/icons/no.png" alt="Off" /> You will not be prompted to set up popups.
+
+HEADERS_TITLE        = Select header cells
+HEADERS_LONGDESC     = While converting your spreadsheet, individual cells - or entire rows of cells - may be designated as header cells. This stage allows you to pick which cells should be made into header cells by clicking on them!
+HEADERS_SELECT       = Select the cells you want to mark as header cells by clicking on them. If you change your mind, click on the cell again to unmark it. If you want to turn an entire row of cells into headers, or remove headers from an entire row, click the Toggle button (<span style="vertical-align: top"><img class="inl" src="templates/default/images/icons/toggle.png" alt="toggle"/></span>) at the left of the row. Once you are happy with your selection, click Next to proceed.
+HEADERS_CONFIRM      = Below is a preview of your table showing the header cells you selected. To make viewing easier, the zebra tables feature has been turned on for this preview - if you left the zebra tables option off in the options, it won't be included in the finished output! If this table looks okay, hit Next to go to the next stage, otherwise you can hit Prev to change the header cell selection.
+
+POPUPS_TITLE         = Select popups
+POPUPS_LONGDESC      = While converting your spreadsheet, it is possible to merge columns of cells in such a way that cells in one column form the anchors for popups while cells in another column form the bodies of the popups. You may specify multiple popup merges, the only restriction being that you can not attempt to create nested popups by making one popup anchor column the body of another.
+POPUPS_SELECT        = Select a column you want to act as a popup anchor by clicking on the 'Set Anchor' (<img class="inl" src="templates/default/images/icons/anchor_add_over.png" alt="anchor_add" />) marker above the column. Once you have selected an anchor column, you should click on any of the available 'Set Body' (<img class="inl" src="templates/default/images/icons/body_add_over.png" alt="body add"/>) markers. To clear previously set popups, click on the 'Remove Anchor' (<img class="inl" src="templates/default/images/icons/anchor_over.png" alt="anchor"/>) or 'Remove Body' (<img class="inl" src="templates/default/images/icons/body_over.png" alt="body"/>) markers that will appear when you move the mouse over an anchor or body marker.
+POPUPS_CONFIRM       = Below is a preview of your table showing the popups you selected (and, if you set any) any headers you have previously set, too. To make viewing easier, the zebra tables feature has been turned on for this preview - if you left the zebra tables option off in the options, it won't be included in the finished output! If this table looks okay, hit Next to go to the next stage, otherwise you can hit Prev to change the popup selection.
+POPUP_ID             = Popup #***id***
+
+OUTPUT_TITLE         = Converted excel output
+OUTPUT_LONGDESC      = The system has finished converting the provided excel spreadsheet, and this page contains a preview of the table and a box from which you may copy the code to paste into other systems.
+OUTPUT_CHECK         = This is a preview of your table, and the corresponding markup is shown in the output box below the preview. If you wish to change any aspects of the table, please use the Prev button to go back through the wizard. To make viewing easier, the zebra tables feature has been turned on for the preview - if you left the zebra tables option off in the options, it won't be included in the output box.
+OUTPUT_JUMP          = Jump to the output box.
+OUTPUT_TABLE         = Output table markup:

@@ -1,0 +1,7 @@
+GLOBAL_NOID            = No upload id provided, nothing to do. Giving up in disgust.
+GLOBAL_BADID           = The specified upload id is not valid. Processing can not continue.
+GLOBAL_BADTYPE         = Somehow a file that is not xls or xlsx has made it in. This can't happen!
+GLOBAL_VALOPT_NOVALUE  = No value has been specified for '***field***'. This is a required field, please enter a value and try again.
+GLOBAL_VALOPT_LOWVALUE = The value specified for '***field***' is out of range. The minimum permitted value is ***minimum***, enter number greater than or equal to this and try again.
+GLOBAL_VALOPT_HIVALUE  = The value specified for '***field***' is out of range. The maximum permitted value is ***maximum***, enter number less than or equal to this and try again.
+GLOBAL_VALOPT_BADVALUE = The value specified for '***field***' does not appear to be valid, please try again with a different value.

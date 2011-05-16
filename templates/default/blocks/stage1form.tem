@@ -1,0 +1,51 @@
+<div class="left">
+***error***
+<form action="index.cgi" method="post">
+<p>{L_OPTIONS_SELECT}</p>
+<table class="formtable" cellpadding="3" cellspacing="1">
+    <tr><th class="formhead" colspan="2">{L_OPTIONS_SHEET}</th></tr>
+    <tr>
+        <td class="formname">{L_OPTIONS_NAME}:</td>
+        <td class="formfield"><select name="worksheet" size="1">
+                              ***sheets***
+                              </select>
+        </td>
+    </tr>
+    <tr><th class="formhead padover" colspan="2">{L_OPTIONS_OUTOPT}</th></tr>
+    <tr>
+        <td class="formname">{L_OPTIONS_OUTT}:</td>
+        <td class="formfield"><select name="output" size="1">
+                              ***formats***
+                              </select>
+        </td>
+    </tr>
+    <tr>
+        <td class="formname">{L_OPTIONS_ZEBRA}:</td>
+        <td class="formfield"><input type="checkbox" name="zebra" value="on" ***zebra*** />
+                              <span class="note">{L_OPTIONS_ZEBNOTE}</span>
+        </td>
+    </tr>
+    <tr><th class="formhead padover" colspan="2">{L_OPTIONS_SETOPT}</th></tr>
+    <tr>
+        <td class="formname">{L_OPTIONS_HEADERS}:</td>
+        <td class="formfield"><input type="checkbox" name="headers" value="on" ***headers*** />
+        </td>
+    </tr>
+    <tr>
+        <td class="formname">{L_OPTIONS_POPUPS}:</td>
+        <td class="formfield"><input type="checkbox" name="popups" value="on" ***popups*** />
+                              <span class="note">{L_OPTIONS_POPNOTE}</span>
+        </td>
+    </tr>
+</table>
+<table class="formtable" cellpadding="3" cellspacing="1">
+    <tr>
+        <td class="nextbox">
+            <input type="hidden" name="stage"   value="1" />
+            <input type="hidden" name="uid"     value="***uid***" />
+            <input type="submit" name="setopts" accesskey="N" value="{L_NEXT}" />
+        </td> 
+    </tr>
+</table>
+</form>
+</div>
