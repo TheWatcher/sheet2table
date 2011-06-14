@@ -54,7 +54,7 @@ sub get_name {
 sub get_merged_areas {
     my $self = shift;
 
-    return $self -> {"MergeArea"};
+    return $self -> {"MergedArea"};
 }
 
 1;
