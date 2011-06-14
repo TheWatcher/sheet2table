@@ -814,7 +814,7 @@ sub garbage_collect {
     my $now = time();
 
     # Do nothing if we're still in the last gc period
-    return if($sysvars -> {"settings"} -> -> {"config"} -> {"last_gc"} + GC_TIME > $now);
+    return if($sysvars -> {"settings"} -> {"config"} -> {"last_gc"} + GC_TIME > $now);
 
     # We need to garbage collect, set the time so no other scripts try it for a while
     my $setgc = $sysvars -> {"dbh"} -> prepare("UPDATE ".$sysvars -> {"settings"} -> {"database"} -> {"settings"}."
