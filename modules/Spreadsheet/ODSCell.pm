@@ -1,4 +1,5 @@
 package Spreadsheet::ODSCell;
+use strict;
 
 sub new {
     my $invocant = shift;

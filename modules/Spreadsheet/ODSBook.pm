@@ -27,7 +27,7 @@ use XML::Simple;
 use Clone qw(clone);
 use Spreadsheet::ODSSheet;
 use Spreadsheet::ODSCell;
-
+use strict;
 
 ## @cmethod $ new($filename)
 # Create a new ODSBook object from the content.xml inside the specified .ods file.

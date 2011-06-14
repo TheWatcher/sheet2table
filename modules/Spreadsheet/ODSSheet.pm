@@ -1,5 +1,7 @@
 package Spreadsheet::ODSSheet;
 
+use strict;
+
 sub new {
     my $invocant = shift;
     my $class    = ref($invocant) || $invocant;
@@ -16,7 +18,7 @@ sub get_cell {
     my $row  = shift;
     my $col  = shift;
 
-    return $sheet -> {"table:table-row"} -> [$row] -> {"table:table-cell"} -> [$col];
+    return $self -> {"table:table-row"} -> [$row] -> {"table:table-cell"} -> [$col];
 }
 
 
