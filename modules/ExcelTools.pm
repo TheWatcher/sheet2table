@@ -23,13 +23,15 @@
 
 ## @class ExcelTools
 # This class provides a number of functions to simplify the loading
-# and processing of excel (xls and xlsx) files. It is 
-# 
+# and processing of excel (xls and xlsx) files. It is
+#
 package ExcelTools;
 
 use strict;
 use Spreadsheet::ParseExcel;
 use Spreadsheet::XLSX;
+use Spreadsheet::ODSBook;
+
 use Utils qw(path_join);
 
 ## @cmethod $ new(%args)
@@ -54,7 +56,7 @@ sub new {
 
 ## @fn $ load_workbook($local_name, $type)
 # Load the specified workbook from the filesystem into memory, and return a reference
-# to it. 
+# to it.
 #
 # @param local_name The name of the file, without any path.
 # @param type       The file type, must be 'xls' or 'xlsx'
@@ -76,10 +78,20 @@ sub load_workbook {
     # die if left to its own devices, so we need to help it out a bit...
     } elsif($type eq "xlsx") {
         my $workbook = eval { Spreadsheet::XLSX -> new($filename) };
-        
+
         # if eval error is set, the parse failed, so return it as a sane string
         return $@ if($@);
-        
+
+        # otherwise, return the workbook
+        return $workbook;
+
+    # If it's a .ods file, we need to fall back on our ODSBook hack module
+    } elsif($type eq "ods") {
+        my $workbook = eval { Spreadsheet::ODSBook -> new($filename) };
+
+        # if eval error is set, the parse failed, so return it as a sane string
+        return $@ if($@);
+
         # otherwise, return the workbook
         return $workbook;
 
@@ -99,7 +111,7 @@ sub get_worksheet_size {
 
     my ($rowmin, $rowmax) = $worksheet -> row_range();
     my ($colmin, $colmax) = $worksheet -> col_range();
-   
+
     # trim empty columns off the right side.
     my $isempty = 1;
     for(; $colmax >= $colmin; --$colmax) {
@@ -115,7 +127,7 @@ sub get_worksheet_size {
         }
         last if(!$isempty);
     }
-    
+
     # And off the bottom too.
     $isempty = 1;
     for(; $rowmax >= $rowmin; --$rowmax) {
@@ -131,7 +143,7 @@ sub get_worksheet_size {
         }
         last if(!$isempty);
     }
-    
+
     return ($rowmin, $rowmax, $colmin, $colmax);
 }
 
@@ -147,7 +159,7 @@ sub get_worksheets {
     my $self       = shift;
     my $workbook = shift;
     my @result;
-    
+
     foreach my $sheet ($workbook -> worksheets()) {
         my ($rmin, $rmax, $cmin, $cmax) = $self -> get_worksheet_size($sheet);
 
@@ -220,7 +232,7 @@ sub mark_headers {
                                              WHERE sheetid = ?");
     $headh -> execute($id)
          or die_log($self -> {"cgi"} -> remote_host(), "Unable to perform popup lookup: ".$self -> {"dbh"} -> errstr);
-       
+
     # For each header listed in the database, mark the cell in the sheet appropriately
     while(my $header = $headh -> fetchrow_arrayref()) {
         my $cell = $worksheet -> get_cell($header -> [0], $header -> [1]);
@@ -262,16 +274,16 @@ sub optimise_worksheet {
                         # is the cell merged? If it is, does the cell have any content we need to save?
                         if($incell -> is_merged() && $incell -> {"Val"} ne '') {
                             # hell, yes it does. There's no point looking down or up, as nuked cells are in columns
-                            # of nuked cells. As this is the top left, if the cell to the right is part of the same 
+                            # of nuked cells. As this is the top left, if the cell to the right is part of the same
                             # merge group, we can copy the content there and be safe.
                             my $sidecell = $worksheet -> get_cell($inr, $inc + 1);
-                                
-                            $sidecell -> {"Val"} = $incell -> {"Val"} 
+
+                            $sidecell -> {"Val"} = $incell -> {"Val"}
                                 if($sidecell && $sidecell -> {"mergearea"} && $sidecell -> {"mergearea"} == $incell -> {"mergearea"});
                         }
                         next;
                     }
-                    
+
                     # Not nuked, so just copy over
                     $outcells -> [$outr] -> [$outc] = $incell;
                 }
@@ -298,7 +310,7 @@ sub optimise_worksheet {
                         while($cell -> {"mergearea"} == $area) {
                             $cell -> {"mergearea"} = $areaid;
                             $cell -> {"updated"}   = 1;
-                            
+
                             ++$right;
                             $cell = $worksheet -> get_cell($row, $col);
                         }
