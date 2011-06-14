@@ -32,7 +32,7 @@ my $contact = 'webmaster@starforge.co.uk'; # global contact address, for error m
 # install more useful error handling
 BEGIN {
     $ENV{"PATH"} = ""; # Force no path.
-    
+
     delete @ENV{qw(IFS CDPATH ENV BASH_ENV)}; # Clean up ENV
     sub handle_errors {
         my $msg = shift;
@@ -107,15 +107,15 @@ my $stages = [ { "active"   => "templates/default/images/stage/upload_active.png
                  "func"     => \&build_stage4_output } ];
 
 # Approved html tags
-my @approved_html = ("a", "pre", "code", "br", "object", "embed", 
-                     "table", "tr", "td", "th", "tbody", "thead", 
-                     "ul", "ol", "li", 
+my @approved_html = ("a", "pre", "code", "br", "object", "embed",
+                     "table", "tr", "td", "th", "tbody", "thead",
+                     "ul", "ol", "li",
                      "dl", "dt", "dd",
                      "h1", "h2", "h3", "h4", "h5", "h6", "h7",
                      "hr",
                      "sub","sup",
                      "tt", "b", "i", "u", "div", "span", "strong", "blockquote",
-                     
+
     );
 
 # output function hash
@@ -142,8 +142,8 @@ sub revert_property_quotes {
 
 
 ## @fn $ cleanup_cell_html($content)
-# Remove any potentially dangerous content from the specified cell. This will sanitise 
-# any content that could break the table when generated as html. Note that this is 
+# Remove any potentially dangerous content from the specified cell. This will sanitise
+# any content that could break the table when generated as html. Note that this is
 # still potentially a security risk in practice - as any situation that allows user-side
 # html is
 #
@@ -172,7 +172,7 @@ sub cleanup_cell_html {
         $content = scrub_html($content)
             or return "Unable to process html content in cell.";
 
-        # Get htmltidy to clean it up some more - scrubbing helps remove dangerous stuff, 
+        # Get htmltidy to clean it up some more - scrubbing helps remove dangerous stuff,
         # but may not have removed all possible crap, this should.
         $content = tidy_html($content, { tidy_mark      => 0,
                                          output_xhtml   => 1,
@@ -181,10 +181,10 @@ sub cleanup_cell_html {
                                          show_body_only => 1,
                              })
             or return "Unable to run tidy over content in cell.";
-    }                                  
+    }
 
     $content =~ s/^\s*(.*?)\s*$/$1/;
-        
+
     return $content;
 }
 
@@ -197,7 +197,7 @@ sub cleanup_cell_html {
 # @param body    The body of the popup, may contain html or wiki markup.
 # @return The formatted popup tag.
 sub format_popup_html {
-    my $sysargs = shift; 
+    my $sysargs = shift;
     my $anchor  = shift;
     my $body    = shift;
 
@@ -213,7 +213,7 @@ sub format_popup_html {
 # @param body    The body of the popup, may contain html or wiki markup.
 # @return The formatted popup tag.
 sub format_popup_mediawiki {
-    my $sysargs = shift; 
+    my $sysargs = shift;
     my $anchor  = shift;
     my $body    = shift;
 
@@ -225,12 +225,12 @@ sub format_popup_mediawiki {
 # Process the specified worksheet, merging cells marked as belonging to popups into
 # the title cell. This goes through each popup column pair set for this sheet and
 # shoves the body cell data into the title cell via the formatter function.
-# 
+#
 # @param sysvars   A reference to a hash containing the system template, database, cgi, and settings objects.
 # @param id        The id of the upload being processed.
 # @param worksheet The worksheet containing the data to process.
 # @param formatter A reference to a function that takes three arguments - the sysargs,
-#                  the popup anchor text, and the popup body - and returns a string 
+#                  the popup anchor text, and the popup body - and returns a string
 #                  containing the popup.
 sub process_popups {
     my $sysvars   = shift;
@@ -254,7 +254,7 @@ sub process_popups {
         for(my $row = $minrow; $row <= $maxrow; ++$row) {
             # Get the two cells, if possible
             my $title_cell = $worksheet -> get_cell($row, $popup -> {"title_col"});
-            
+
             # If the title cell is in a merge, what we really want is the top left cell of the merge
             if($title_cell -> is_merged()) {
                 my $areas = $worksheet -> get_merged_areas();
@@ -265,7 +265,7 @@ sub process_popups {
             }
 
             my $body_cell  = $worksheet -> get_cell($row, $popup -> {"body_col"});
-            
+
             # Don't try doing anything if we have no body cell, there's no point.
             if($body_cell) {
                 # Mark the body cell as junk for later killing
@@ -280,7 +280,7 @@ sub process_popups {
                     $title_cell -> {"Val"} = $formatter -> ($sysvars, $title_cell -> {"Val"}, $body_cell -> {"Val"});
                     $body_cell -> {"Val"} = ''; # Remove the content.
                     $title_cell -> {"popup"} = 1;
-                }       
+                }
             }
         }
     }
@@ -358,11 +358,11 @@ sub preprocess_worksheet {
 # do_popups    Enable processing of popups.
 # do_zebra     Enable zebra tables.
 # preview      Enable preview mode.
-# 
+#
 # @param sysvars   A reference to a hash containing the system template, database, cgi, and settings objects.
 # @param id        The id of the upload being processed.
 # @param worksheet The worksheet containing the data to process.
-# @param options   A reference to a hash of options to control output processing.   
+# @param options   A reference to a hash of options to control output processing.
 # @return A string containing the html table
 sub worksheet_to_html {
     my $sysvars    = shift;
@@ -374,10 +374,10 @@ sub worksheet_to_html {
     # Forcibly turn off other options if show_popups is on
     $options -> {"show_headers"} = $options -> {"do_popups"} = $options -> {"do_headers"} = 0
         if($options -> {"show_popups"});
-           
+
     # And turn off other options if show headers is on.
     $options -> {"show_popups"} = $options -> {"do_popups"} = $options -> {"do_headers"} = 0
-        if($options -> {"show_headers"});     
+        if($options -> {"show_headers"});
 
     # Set everything up ready for generation
     preprocess_worksheet($sysvars, $id, $worksheet, $options -> {"do_headers"} || $options -> {"show_headers"}, $options -> {"do_popups"}, \&format_popup_html);
@@ -418,7 +418,7 @@ sub worksheet_to_html {
                                                                                          "***extra***" => $extra});
         }
         $table .= "</tr>\n";
-    } 
+    }
 
     # Force preview if show headers or popups is enabled
     $options -> {"preview"} = $options -> {"show_headers"} || $options -> {"show_popups"};
@@ -426,13 +426,13 @@ sub worksheet_to_html {
     # Now go through the cells themselves...
     for(my $row = $rowmin; $row <= $rowmax; ++$row) {
         $table .= "    <tr>";
-        $table .= $sysvars -> {"template"} -> load_template("blocks/rowpick.tem", {"***row***" => $row}) 
+        $table .= $sysvars -> {"template"} -> load_template("blocks/rowpick.tem", {"***row***" => $row})
             if($options -> {"show_headers"});
-        
+
         for(my $col = $colmin; $col <= $colmax; ++$col) {
             my $cell = $worksheet -> get_cell($row, $col) || {};
 
-            # Skip non-data merged cells 
+            # Skip non-data merged cells
             next if(defined($cell -> {"mergearea"}) && !$cell -> {"isdatacell"});
 
             $table .= ($cell -> {"isheader"} && $options -> {"do_headers"}) ? '<th' : '<td';
@@ -453,7 +453,7 @@ sub worksheet_to_html {
     }
 
     $table .= "</table>";
-    
+
     # Need to tack on the stuff for the popups if it has been set
     $table .= $sysvars -> {"template"} -> load_template("blocks/popupjs.tem", {"***modes***"   => $modes,
                                                                                "***anchors***" => $anchors,
@@ -472,11 +472,11 @@ sub worksheet_to_html {
 # do_headers   Enable processing of headers.
 # do_popups    Enable processing of popups.
 # do_zebra     Enable zebra tables.
-# 
+#
 # @param sysvars   A reference to a hash containing the system template, database, cgi, and settings objects.
 # @param id        The id of the upload being processed.
 # @param worksheet The worksheet containing the data to process.
-# @param options   A reference to a hash of options to control output processing.   
+# @param options   A reference to a hash of options to control output processing.
 # @return A string containing the mediawiki table
 sub worksheet_to_mediawiki {
     my $sysvars    = shift;
@@ -498,11 +498,11 @@ sub worksheet_to_mediawiki {
 
     for(my $row = $rowmin; $row <= $rowmax; ++$row) {
         $table .= "\n|-\n";
-        
+
         for(my $col = $colmin; $col <= $colmax; ++$col) {
             my $cell = $worksheet -> get_cell($row, $col) || {};
 
-            # Skip non-data merged cells 
+            # Skip non-data merged cells
             next if(defined($cell -> {"mergearea"}) && !$cell -> {"isdatacell"});
 
             $table .= ($cell -> {"isheader"} && $options -> {"do_headers"}) ? '!' : '|';
@@ -519,7 +519,7 @@ sub worksheet_to_mediawiki {
 
     return $table;
 }
-   
+
 
 
 # =============================================================================
@@ -534,7 +534,7 @@ sub get_formats {
     my $sysvars = shift;
     my @result;
 
-    my $fmth = $sysvars -> {"dbh"} -> prepare("SELECT name 
+    my $fmth = $sysvars -> {"dbh"} -> prepare("SELECT name
                                                FROM ".$sysvars -> {"settings"} -> {"database"} -> {"formats"}."
                                                ORDER BY id");
     $fmth -> execute()
@@ -549,15 +549,15 @@ sub get_formats {
 
 
 ## @fn $ get_upload_data($sysvars, $id)
-# Obtain the data for the upload identified by the specified id, provided that the 
+# Obtain the data for the upload identified by the specified id, provided that the
 # address stored for the upload matches the address the request is coming from.
 #
 # @note This function can be set to only return an upload record when some or all of
 #       the ip address of the current user matches the ip address recorded for the
 #       upload. This is controlled via the ip_security setting: if the security level
-#       is 0 then any IP will match and the record can potentially be obtained by 
-#       anyone. Levels 1 to 3 match increasing levels of ip range: at level 1, the 
-#       upper octet must match, level two the upper two octets must match, etc. Level 
+#       is 0 then any IP will match and the record can potentially be obtained by
+#       anyone. Levels 1 to 3 match increasing levels of ip range: at level 1, the
+#       upper octet must match, level two the upper two octets must match, etc. Level
 #       4 requires an exact IP match, and represents the most secure option. Level 4
 #       (and possibly level 3) may produce false denials if the user is behind a
 #       load-balanced proxy.
@@ -582,7 +582,7 @@ sub get_upload_data {
     }
     $address .= "%" if($bit < 4);
 
-    my $sheeth = $sysvars -> {"dbh"} -> prepare("SELECT s.*,f.function 
+    my $sheeth = $sysvars -> {"dbh"} -> prepare("SELECT s.*,f.function
                                                  FROM ".$sysvars -> {"settings"} -> {"database"} -> {"sheets"}." AS s
                                                  LEFT JOIN ".$sysvars -> {"settings"} -> {"database"} -> {"formats"}." AS f
                                                  ON f.id = s.output_type
@@ -608,7 +608,7 @@ sub start_upload {
 
     # First, do we have a file to grab?
     my $file = $sysvars -> {'cgi'} -> upload("excelfile");
-    
+
     # bomb if the file is not found
     return $sysvars -> {"template"} -> replace_langvar("UPLOAD_ERR_NOFILE") if(!$file);
 
@@ -624,22 +624,22 @@ sub start_upload {
     my ($ext) = $name =~ /\.([^\.]+)$/;
     return $sysvars -> {"template"} -> replace_langvar("UPLOAD_ERR_NOEXT") if(!$ext);
 
-    # The extension must be .xls or .xlsx
-    return $sysvars -> {"template"} -> replace_langvar("UPLOAD_ERR_BADEXT") 
-        if($ext !~ /^xlsx?$/i);
+    # The extension must be .xls, .xlsx, or .ods
+    return $sysvars -> {"template"} -> replace_langvar("UPLOAD_ERR_BADEXT")
+        if($ext !~ /^xlsx?$/i && $ext !~ /^ods$/i);
 
     # Okay, if we get here, the file is probably a excel workbook, so we can start doing things
     # First, we need to create a target name
     my $sha256 = Digest -> new("SHA-256");
     $sha256 -> add($file, $sysvars -> {"cgi"} -> remote_host(), time(), $$);
     my $destname = $sha256 -> hexdigest();
-        
+
     # copy over...
     my $src_tainted = $sysvars -> {'cgi'} -> tmpFileName($file);
     my ($srcfile) = $src_tainted =~ /^(.*)$/; # horribly messy, but we need to trust cgi, so...
 
     my $destfile =  path_join($sysvars -> {"settings"} -> {"config"} -> {"file_dir"}, $destname);
-    copy($srcfile, $destfile) 
+    copy($srcfile, $destfile)
         or return $sysvars -> {"template"} -> replace_langvar("UPLOAD_ERR_BADCOPY", {"***error***" => $!});
 
     # create a new entry in the database for this
@@ -652,7 +652,7 @@ sub start_upload {
     my $newid = $sysvars -> {"dbh"} -> {"mysql_insertid"};
     my $entry = get_upload_data($sysvars, $newid);
 
-    return $entry || $sysvars -> {"template"} -> replace_langvar("UPLOAD_ERR_BADID");    
+    return $entry || $sysvars -> {"template"} -> replace_langvar("UPLOAD_ERR_BADID");
 }
 
 
@@ -695,14 +695,14 @@ sub set_options {
                                                                                     "minimum"  => 0,
                                                                                     "maximum"  => $workbook -> worksheet_count() - 1 });
     $errors .= $error."<br/>" if($error);
-    
+
     # Output formats need to check against the database
     ($args -> {"output_type"}, $error) = valid_numeric_option($sysvars, "output", {"nicename" => $sysvars -> {"template"} -> replace_langvar("WORKSHEER_OUTT"),
                                                                                    "required" => 1,
                                                                                    "table"    => $sysvars -> {"settings"} -> {"database"} -> {"formats"},
                                                                                    "column"   => "id"});
     $errors .= $error."<br/>" if($error);
-    
+
     # The zebra switch is either on or off...
     $args -> {"zebra"} = defined($sysvars -> {"cgi"} -> param("zebra"));
 
@@ -755,11 +755,11 @@ sub set_header_cells {
         # over the whole string, and shove the results into the database.
         while($hlist =~ /r(\d+)c(\d+);/g) {
             my ($row, $col) = ($1, $2);
-            
+
             $newheads -> execute($id, $col, $row)
                 or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to create new header data for ID $id: ".$sysvars -> {"dbh"} -> errstr);
         }
-    }   
+    }
 
     touch_sheet($sysvars, $id);
 }
@@ -794,11 +794,11 @@ sub set_popup_cols {
         my $popid = 0;
         while($plist =~ /a(\d+)b(\d+);/g) {
             my ($anchor, $body) = ($1, $2);
-            
+
             $newpops -> execute($id, $popid++, $anchor, $body)
                 or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to create new popup data for ID $id: ".$sysvars -> {"dbh"} -> errstr);
         }
-    }   
+    }
 
     touch_sheet($sysvars, $id);
 }
@@ -815,7 +815,7 @@ sub garbage_collect {
 
     # Do nothing if we're still in the last gc period
     return if($sysvars -> {"settings"} -> {"last_gc"} + GC_TIME > $now);
-    
+
     # We need to garbage collect, set the time so no other scripts try it for a while
     my $setgc = $sysvars -> {"dbh"} -> prepare("UPDATE ".$sysvars -> {"settings"} -> {"database"} -> {"settings"}."
                                                 SET value = UNIX_TIMESTAMP()
@@ -832,7 +832,7 @@ sub garbage_collect {
                                                       WHERE sheetid = ?");
     my $deadsheets  = $sysvars -> {"dbh"} -> prepare("DELETE FROM ".$sysvars -> {"settings"} -> {"database"} -> {"sheets"}."
                                                       WHERE id = ?");
- 
+
     my $oldsheets = $sysvars -> {"dbh"} -> prepare("SELECT id, local_name FROM ".$sysvars -> {"settings"} -> {"database"} -> {"sheets"}."
                                                      WHERE last_updated < ?");
     $oldsheets -> execute($retainto)
@@ -852,14 +852,14 @@ sub garbage_collect {
             or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to garbage collect sheet ".$sheet -> {"id"}.": ".$sysvars -> {"dbh"} -> errstr);
     }
 }
-        
+
 
 # =============================================================================
 #  Options and validation support
 
 ## @fn $ build_options($sysvars, $optlist, $select)
 # Build a string containing html option elements, one for each entry in the
-# optlist array provided. If select is specified, the option it corresponds 
+# optlist array provided. If select is specified, the option it corresponds
 # to will be selected.
 #
 # @param sysvars A reference to a hash containing the system template, database, cgi, and settings objects.
@@ -949,14 +949,14 @@ sub valid_numeric_option {
 # the user to select a file to upload to begin the conversion process.
 #
 # @param sysvars A reference to a hash containing the system template, database, cgi, and settings objects.
-# @param error   An optional error message to show in the form. 
+# @param error   An optional error message to show in the form.
 # @return An array of two values: the title, and the message box.
 sub build_stage0_upload {
     my $sysvars = shift;
     my $error   = shift;
 
     # If we have an error, encapsulate it
-    $error = $sysvars -> {"template"} -> load_template("blocks/stage_error.tem", {"***error***" => $error}) 
+    $error = $sysvars -> {"template"} -> load_template("blocks/stage_error.tem", {"***error***" => $error})
         if($error);
 
     # Make a nice session digest for the upload
@@ -998,14 +998,14 @@ sub build_stage1_options {
     } else {
         $entry = start_upload($sysvars);
     }
-    
+
     # If entry is not a hashref here, it's an error message
     return build_stage0_upload($sysvars, $entry) if(!ref($entry));
 
     # We have an ID at this point, now we need to form a list of worksheets, so we
     # need to actually load the workbook...
     my $workbook = $sysvars -> {"excel"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
-    
+
     # If workbook is not a reference, it is an error message
     return build_stage0_upload($sysvars, "Error:".$workbook) if(!ref($workbook));
 
@@ -1022,10 +1022,10 @@ sub build_stage1_options {
     if(defined($sysvars -> {"cgi"} -> param("setopts")) && !defined($error)) {
         # Need to get an updated copy of the data
         $entry = get_upload_data($sysvars, $id);
-        
+
         # The stage we go to next depends on whether we have header or popups enabled
         my $stage = $entry -> {"set_headers"} ? STAGE_HEADERS : $entry -> {"set_popups"} ? STAGE_POPUPS : STAGE_OUTPUT;
-        
+
         # Now we need human readable stuff for the options
         my $zebra   = $sysvars -> {"template"} -> replace_langvar("OPTIONS_ZEBRA_"  .($entry -> {"zebra"}       ? "ON" : "OFF"));
         my $headers = $sysvars -> {"template"} -> replace_langvar("OPTIONS_HEADERS_".($entry -> {"set_headers"} ? "ON" : "OFF"));
@@ -1054,7 +1054,7 @@ sub build_stage1_options {
         my $formats = build_options($sysvars, $formatlist, $entry -> {"output_type"});
 
         # right, now we can make the page... If we have an error, encapsulate it
-        $error = $sysvars -> {"template"} -> load_template("blocks/stage_error.tem", {"***error***" => $error}) 
+        $error = $sysvars -> {"template"} -> load_template("blocks/stage_error.tem", {"***error***" => $error})
             if($error);
 
         # Now generate the title, message.
@@ -1095,7 +1095,7 @@ sub build_stage2_headers {
     } else {
         $entry = $sysvars -> {"template"} -> replace_langvar("GLOBAL_NOID");
     }
-    
+
     # If entry is not a hashref here, it's an error message. Drop back to stage 0 here,
     # as bad/missing IDs are not recoverable at stage 1.
     return build_stage0_upload($sysvars, $entry) if(!ref($entry));
@@ -1103,7 +1103,7 @@ sub build_stage2_headers {
     # We have an ID at this point, now we need to form a list of worksheets, so we
     # need to actually load the workbook...
     my $workbook = $sysvars -> {"excel"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
-    
+
     # If workbook is not a reference, it is an error message. Again, drop back to 0
     # as a broken upload is not recoverable at stage 1.
     return build_stage0_upload($sysvars, $workbook) if(!ref($workbook));
@@ -1152,7 +1152,7 @@ sub build_stage2_headers {
                                                                                                                                "***table***"  => $table}));
     }
 
-    return ($title, $message);       
+    return ($title, $message);
 }
 
 
@@ -1176,7 +1176,7 @@ sub build_stage3_popups {
     } else {
         $entry = $sysvars -> {"template"} -> replace_langvar("GLOBAL_NOID");
     }
-    
+
     # If entry is not a hashref here, it's an error message. Drop back to stage 0 here,
     # as bad/missing IDs are not recoverable at stage 1.
     return build_stage0_upload($sysvars, $entry) if(!ref($entry));
@@ -1184,7 +1184,7 @@ sub build_stage3_popups {
     # We have an ID at this point, now we need to form a list of worksheets, so we
     # need to actually load the workbook...
     my $workbook = $sysvars -> {"excel"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
-    
+
     # If workbook is not a reference, it is an error message. Again, drop back to 0
     # as a broken upload is not recoverable at stage 1.
     return build_stage0_upload($sysvars, $workbook) if(!ref($workbook));
@@ -1254,7 +1254,7 @@ sub build_stage4_output {
     } else {
         $entry = $sysvars -> {"template"} -> replace_langvar("GLOBAL_NOID");
     }
-    
+
     # If entry is not a hashref here, it's an error message. Drop back to stage 0 here,
     # as bad/missing IDs are not recoverable at stage 1.
     return build_stage0_upload($sysvars, $entry) if(!ref($entry));
@@ -1262,7 +1262,7 @@ sub build_stage4_output {
     # We have an ID at this point, now we need to form a list of worksheets, so we
     # need to actually load the workbook...
     my $workbook = $sysvars -> {"excel"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
-    
+
     # If workbook is not a reference, it is an error message. Again, drop back to 0
     # as a broken upload is not recoverable at stage 1.
     return build_stage0_upload($sysvars, $workbook) if(!ref($workbook));
@@ -1274,7 +1274,7 @@ sub build_stage4_output {
 
     # Make the preview table...
     my $showtable = worksheet_to_html($sysvars, $id, $worksheet, {"do_popups"  => $entry -> {"set_popups"},
-                                                                  "do_headers" => $entry -> {"set_headers"}, 
+                                                                  "do_headers" => $entry -> {"set_headers"},
                                                                   "do_zebra"   => 1});
 
     $workbook = $sysvars -> {"excel"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
@@ -1288,7 +1288,7 @@ sub build_stage4_output {
 
     # And generate the actual markup
     my $realtable = $converters{$entry -> {"function"}} -> ($sysvars, $id, $worksheet, {"do_popups"  => $entry -> {"set_popups"},
-                                                                                        "do_headers" => $entry -> {"set_headers"}, 
+                                                                                        "do_headers" => $entry -> {"set_headers"},
                                                                                         "do_zebra"   => $entry -> {"zebra"}});
 
     # The stage we go to when hitting Back depends on whether we have header or popups enabled
@@ -1313,7 +1313,7 @@ sub build_stage4_output {
 ## @fn $ page_display($sysvars)
 # Generate the contents of the page based on the current step in the wizard.
 #
-# @param sysvars A reference to a hash containing references to the template, 
+# @param sysvars A reference to a hash containing references to the template,
 #                database, settings, and cgi objects.
 # @return A string containing the page to display.
 sub page_display {
@@ -1339,8 +1339,8 @@ sub page_display {
     # Do we have a function?
     my $func = $stages -> [$stage] -> {"func"}; # these two lines could be done in one, but it would look horrible...
     ($title, $body, $extrahead) = $func -> ($sysvars) if($func);
-    
-    return $sysvars -> {"template"} -> load_template("page.tem", 
+
+    return $sysvars -> {"template"} -> load_template("page.tem",
                                                      { "***title***"     => $title,
                                                        "***extrahead***" => $extrahead,
                                                        "***core***"      => $body || '<p class="error">No page content available, this should not happen.</p>'});
@@ -1362,7 +1362,7 @@ sub cgi_upload_hook {
     # so it's bound to be at least a few bytes larger than the file size.
     my $length = $ENV{'CONTENT_LENGTH'};
     my $percent = 0;
-    
+
     # Work out the percentage if there is a length
     $percent = sprintf("%.1f", (($bytes_read / $length) * 100))
         if($length);
@@ -1418,7 +1418,7 @@ my $debug = $template -> load_template("debug.tem", {"***secs***"   => sprintf("
                                                      "***user***"   => $user,
                                                      "***system***" => $system,
                                                      "***memory***" => $template -> bytes_to_human(get_proc_size())});
-                                                     
+
 print Encode::encode_utf8($template -> process_template($content, {"***debug***" => $debug}));
 $template -> set_module_obj(undef);
 

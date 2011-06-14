@@ -2,19 +2,19 @@ BACK                 = &lt; Prev
 NEXT                 = Next &gt;
 CONTROL_JUMP         = Jump to next
 
-UPLOAD_TITLE         = Convert an Excel Spreadsheet
-UPLOAD_LONGDESC      = This webapp allows you to convert a worksheet in an Excel spreadsheet into one of several table formats (HTML and MediaWiki markup are currently supported). Note that .xlsx files (workbooks saved from Excel 2007 or later) are supported, but this feature is experimental and may fail hilariously and spectacularly.
-UPLOAD_SELECT        = Select the excel file containing the worksheet you want to convert with the file box below. Once you have selected the file, hit next to continue.
-UPLOAD_FILE          = Excel file
-UPLOAD_ERR_NOFILE    = No excel file specified. Please select an excel file and try again.
-UPLOAD_ERR_NOEXT     = The specified file does not have an extension. Uploaded files must have a .xls or .xlsx extension to be processed.
-UPLOAD_ERR_BADEXT    = The specified file does not have a recognised extension. Uploaded files must have a .xls or .xlsx extension to be processed.
+UPLOAD_TITLE         = Convert a Spreadsheet
+UPLOAD_LONGDESC      = This webapp allows you to convert a spreadsheet in an Excel or OpenDocument Spreadsheet format into one of several table formats (HTML and MediaWiki markup are currently supported). Note that .xlsx files (workbooks saved from Excel 2007 or later) are supported, but this feature is experimental and may fail hilariously and spectacularly.
+UPLOAD_SELECT        = Select the file containing the spreadsheet you want to convert with the file box below. Once you have selected the file, hit next to continue.
+UPLOAD_FILE          = Spreadsheet file
+UPLOAD_ERR_NOFILE    = No spreadsheet file specified. Please select an excel file and try again.
+UPLOAD_ERR_NOEXT     = The specified file does not have an extension. Uploaded files must have a .xls, .xlsx, or .ods extension to be processed.
+UPLOAD_ERR_BADEXT    = The specified file does not have a recognised extension. Uploaded files must have a .xls, .xlsx, or .ods extension to be processed.
 UPLOAD_ERR_BADCOPY   = Unable to save the uploaded spreadsheet. The error reported by the OS was: ***error***
 UPLOAD_ERR_BADID     = The upload process has encountered a fatal error and must abort (bad internal ID encountered). Please report this!
 
 OPTIONS_TITLE        = Select the conversion options
 OPTIONS_LONGDESC     = Your spreadsheet has been uploaded and appears to be usable. Before the system can convert a spreadsheet to a table, it needs to be told which sheet to convert, what to convert it to, and which options to apply.
-OPTIONS_SELECT       = Please select the worksheet you want to convert, and the format that you want the table output to appear in. You may also optionally include the 'class="zebra"' attribute in the table definition to take advantage of automatic row colouring, and enable features to set headers and popups. 
+OPTIONS_SELECT       = Please select the worksheet you want to convert, and the format that you want the table output to appear in. You may also optionally include the 'class="zebra"' attribute in the table definition to take advantage of automatic row colouring, and enable features to set headers and popups.
 OPTIONS_SHEET        = Worksheet selection
 OPTIONS_NAME         = Worksheet name
 OPTIONS_OUTOPT       = Output options
