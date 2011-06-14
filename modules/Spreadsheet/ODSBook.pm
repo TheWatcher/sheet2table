@@ -101,7 +101,7 @@ sub normalise {
 
     foreach my $sheet (keys(%{$self -> {"doc"}})) {
         # convert sheet to an ODSSheet...
-        $self -> {"doc"} -> {$sheet} = Spreadsheet::ODSSheet -> new($self -> {"doc"} -> {$sheet});
+        $self -> {"doc"} -> {$sheet} = Spreadsheet::ODSSheet -> new($self -> {"doc"} -> {$sheet}, $sheet);
 
         # While we're here, mark and skip empty sheets
         if(scalar(@{$self -> {"doc"} -> {$sheet} -> {"table:table-row"}}) == 1 &&
