@@ -3,12 +3,12 @@ package Spreadsheet::ODSCell;
 sub new {
     my $invocant = shift;
     my $class    = ref($invocant) || $invocant;
-    my $sheet    = shift;
+    my $cell     = shift;
 
     # ParseExcel compatibility
-    $sheet -> {"Val"} = $sheet -> {"content"};
+    $cell -> {"Val"} = $cell -> {"content"};
 
-    return bless $sheet, $class;
+    return bless $cell, $class;
 }
 
 
