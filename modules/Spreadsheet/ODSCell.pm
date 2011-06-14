@@ -5,6 +5,9 @@ sub new {
     my $class    = ref($invocant) || $invocant;
     my $sheet    = shift;
 
+    # ParseExcel compatibility
+    $sheet -> {"Val"} = $sheet -> {"content"};
+
     return bless $sheet, $class;
 }
 
