@@ -120,6 +120,9 @@ sub normalise {
                 my $cell = $self -> {"doc"} -> {$sheet} -> {"table:table-row"} -> [$row] -> {"table:table-cell"} -> [$col] =
                     Spreadsheet::ODSCell -> new($self -> {"doc"} -> {$sheet} -> {"table:table-row"} -> [$row] -> {"table:table-cell"} -> [$col]);
 
+                # ParseExcel compatibility
+                $self -> {"doc"} -> {$sheet} -> {"Cells"} -> [$row] -> [$col] = $cell;
+
                 # how many copies do we need?
                 my $copies = $cell -> {"table:number-columns-repeated"};
 
@@ -170,8 +173,13 @@ sub normalise {
 
         # NOTE: May need to add code to handle number-rows-repeated here.
 
-        $self -> {"doc"} -> {$sheet} -> {"rows"} = scalar(@{$self -> {"doc"} -> {$sheet} -> {"table:table-row"}})
-            if(scalar(@{$self -> {"doc"} -> {$sheet} -> {"table:table-row"}}) > $self -> {"doc"} -> {$sheet} -> {"rows"});
+        $self -> {"doc"} -> {$sheet} -> {"rows"} = scalar(@{$self -> {"doc"} -> {$sheet} -> {"table:table-row"}});
+
+        # Calculate ParseExcel compat values
+        $self -> {"doc"} -> {$sheet} -> {"MinRow"} = 0;
+        $self -> {"doc"} -> {$sheet} -> {"MaxRow"} = $self -> {"doc"} -> {$sheet} -> {"rows"} - 1;
+        $self -> {"doc"} -> {$sheet} -> {"MinCol"} = 0;
+        $self -> {"doc"} -> {$sheet} -> {"MaxCol"} = $self -> {"doc"} -> {$sheet} -> {"cols"} - 1;
     }
 }
 
