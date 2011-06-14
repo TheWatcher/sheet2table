@@ -160,7 +160,7 @@ sub normalise {
                     my $ecol = $col + (($cell -> {"table:number-columns-spanned"} ? $cell -> {"table:number-columns-spanned"} : 1) - 1);
                     my $erow = $row + (($cell -> {"table:number-rows-spanned"} ? $cell -> {"table:number-rows-spanned"} : 1) - 1);
 
-                    push(@{$self -> {"doc"} -> {$sheet} -> {"merges"}}, [$row, $col, $erow, $ecol]);
+                    push(@{$self -> {"doc"} -> {$sheet} -> {"MergedArea"}}, [$row, $col, $erow, $ecol]);
                 }
             }
 

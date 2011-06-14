@@ -18,7 +18,7 @@ sub get_cell {
     my $row  = shift;
     my $col  = shift;
 
-    return $self -> {"table:table-row"} -> [$row] -> {"table:table-cell"} -> [$col];
+    return $self -> {"Cells"} -> [$row] -> [$col];
 }
 
 
@@ -29,7 +29,7 @@ sub row_range {
         return (0, -1);
     }
 
-    return (0, $self -> {"rows"} - 1);
+    return ($self -> {"MinRow"}, $self -> {"MaxRow"});
 }
 
 
@@ -40,7 +40,7 @@ sub col_range {
         return (0, -1);
     }
 
-    return (0, $self -> {"cols"} - 1);
+    return ($self -> {"MinCol"}, $self -> {"MaxCol"});
 }
 
 
@@ -54,7 +54,7 @@ sub get_name {
 sub get_merged_areas {
     my $self = shift;
 
-    return $self -> {"merges"};
+    return $self -> {"MergeArea"};
 }
 
 1;
