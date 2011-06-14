@@ -155,6 +155,7 @@ sub normalise {
                 # mark merged cells, and add their row spans to the merge areas list
                 if($cell -> {"table:number-columns-spanned"} > 1 || $cell -> {"table:number-rows-spanned"} > 1) {
                     $cell -> {"merged"} = 1;
+                    $cell -> {"isdatacell"} = 1;
 
                     my $ecol = $col + (($cell -> {"table:number-columns-spanned"} ? $cell -> {"table:number-columns-spanned"} : 1) - 1);
                     my $erow = $row + (($cell -> {"table:number-rows-spanned"} ? $cell -> {"table:number-rows-spanned"} : 1) - 1);
