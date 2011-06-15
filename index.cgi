@@ -24,7 +24,7 @@ use Template;
 use Utils qw(path_join is_defined_numeric get_proc_size);
 
 # local modules
-use ExcelTools;
+use SheetTools;
 
 my $dbh;                                   # global database handle, required here so that the END block can close the database connection
 my $contact = 'webmaster@starforge.co.uk'; # global contact address, for error messages
@@ -66,7 +66,7 @@ my $stages = [ { "active"   => "templates/default/images/stage/upload_active.png
                  "passed"   => "templates/default/images/stage/upload_passed.png",
                  "width"    => 80,
                  "height"   => 40,
-                 "alt"      => "Upload Excel",
+                 "alt"      => "Upload File",
                  "icon"     => "upload",
                  "func"     => \&build_stage0_upload },
                { "active"   => "templates/default/images/stage/options_active.png",
@@ -248,7 +248,7 @@ sub process_popups {
     # For each popup, go down the title column, merging in the content from the
     # body column and marking the body cell as removable. If the cell in the
     # body col is empty, no popup is generated.
-    my ($minrow, $maxrow) = $sysvars -> {"excel"} -> get_worksheet_size($worksheet);
+    my ($minrow, $maxrow) = $sysvars -> {"sheet"} -> get_worksheet_size($worksheet);
     while(my $popup = $poph -> fetchrow_hashref()) {
         # For each row, process the popup...
         for(my $row = $minrow; $row <= $maxrow; ++$row) {
@@ -335,16 +335,16 @@ sub preprocess_worksheet {
     my $formatter  = shift;
 
     # Mark all the merge areas so that we can do spanning and optimisation more easily
-    $sysvars -> {"excel"} -> mark_worksheet_merges($worksheet);
+    $sysvars -> {"sheet"} -> mark_worksheet_merges($worksheet);
 
     # If we are processing headers, go and mark them
-    $sysvars -> {"excel"} -> mark_headers($id, $worksheet) if($do_headers);
+    $sysvars -> {"sheet"} -> mark_headers($id, $worksheet) if($do_headers);
 
     # If we're doing popups, process them now
     process_popups($sysvars, $id, $worksheet, $formatter) if($do_popups);
 
     # Remove columns emptied by popups, and speed up spanning.
-    $sysvars -> {"excel"} -> optimise_worksheet($worksheet, $do_popups);
+    $sysvars -> {"sheet"} -> optimise_worksheet($worksheet, $do_popups);
 }
 
 
@@ -382,7 +382,7 @@ sub worksheet_to_html {
     # Set everything up ready for generation
     preprocess_worksheet($sysvars, $id, $worksheet, $options -> {"do_headers"} || $options -> {"show_headers"}, $options -> {"do_popups"}, \&format_popup_html);
 
-    my ($rowmin, $rowmax, $colmin, $colmax) = $sysvars -> {"excel"} -> get_worksheet_size($worksheet);
+    my ($rowmin, $rowmax, $colmin, $colmax) = $sysvars -> {"sheet"} -> get_worksheet_size($worksheet);
 
     my $colmap = get_popup_colmap($sysvars, $id);
     my ($modes, $anchors, $bodies, $nextid) = ("", "", "", 0);
@@ -491,7 +491,7 @@ sub worksheet_to_mediawiki {
     # Set everything up ready for generation
     preprocess_worksheet($sysvars, $id, $worksheet, $options -> {"do_headers"}, $options -> {"do_popups"}, \&format_popup_mediawiki);
 
-    my ($rowmin, $rowmax, $colmin, $colmax) = $sysvars -> {"excel"} -> get_worksheet_size($worksheet);
+    my ($rowmin, $rowmax, $colmin, $colmax) = $sysvars -> {"sheet"} -> get_worksheet_size($worksheet);
 
     $table  = "{|";
     $table .= " class=\"zebra\"" if($options -> {"do_zebra"});
@@ -1004,12 +1004,12 @@ sub build_stage1_options {
 
     # We have an ID at this point, now we need to form a list of worksheets, so we
     # need to actually load the workbook...
-    my $workbook = $sysvars -> {"excel"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
+    my $workbook = $sysvars -> {"sheet"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
 
     # If workbook is not a reference, it is an error message
     return build_stage0_upload($sysvars, "Error:".$workbook) if(!ref($workbook));
 
-    my $sheetlist = $sysvars -> {"excel"} -> get_worksheets($workbook);
+    my $sheetlist = $sysvars -> {"sheet"} -> get_worksheets($workbook);
     my $formatlist = get_formats($sysvars);
 
     # If we are being called after the user has set the options, set them...
@@ -1102,7 +1102,7 @@ sub build_stage2_headers {
 
     # We have an ID at this point, now we need to form a list of worksheets, so we
     # need to actually load the workbook...
-    my $workbook = $sysvars -> {"excel"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
+    my $workbook = $sysvars -> {"sheet"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
 
     # If workbook is not a reference, it is an error message. Again, drop back to 0
     # as a broken upload is not recoverable at stage 1.
@@ -1118,7 +1118,7 @@ sub build_stage2_headers {
         my $table = worksheet_to_html($sysvars, $id, $worksheet, {"show_headers" => 1, "preview" => 1});
 
         # We need the row and column range from the worksheet
-        my ($minrow, $maxrow, $mincol, $maxcol) = $sysvars -> {"excel"} -> get_worksheet_size($worksheet);
+        my ($minrow, $maxrow, $mincol, $maxcol) = $sysvars -> {"sheet"} -> get_worksheet_size($worksheet);
 
         $title    = $sysvars -> {"template"} -> replace_langvar("HEADERS_TITLE");
         $message  = $sysvars -> {"template"} -> wizard_box($sysvars -> {"template"} -> replace_langvar("HEADERS_TITLE"),
@@ -1183,7 +1183,7 @@ sub build_stage3_popups {
 
     # We have an ID at this point, now we need to form a list of worksheets, so we
     # need to actually load the workbook...
-    my $workbook = $sysvars -> {"excel"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
+    my $workbook = $sysvars -> {"sheet"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
 
     # If workbook is not a reference, it is an error message. Again, drop back to 0
     # as a broken upload is not recoverable at stage 1.
@@ -1199,7 +1199,7 @@ sub build_stage3_popups {
         my $table = worksheet_to_html($sysvars, $id, $worksheet, {"show_popups" => 1, "preview" => 1});
 
         # We need the row and column range from the worksheet
-        my ($minrow, $maxrow, $mincol, $maxcol) = $sysvars -> {"excel"} -> get_worksheet_size($worksheet);
+        my ($minrow, $maxrow, $mincol, $maxcol) = $sysvars -> {"sheet"} -> get_worksheet_size($worksheet);
 
         $title    = $sysvars -> {"template"} -> replace_langvar("POPUPS_TITLE");
         $message  = $sysvars -> {"template"} -> wizard_box($sysvars -> {"template"} -> replace_langvar("POPUPS_TITLE"),
@@ -1261,7 +1261,7 @@ sub build_stage4_output {
 
     # We have an ID at this point, now we need to form a list of worksheets, so we
     # need to actually load the workbook...
-    my $workbook = $sysvars -> {"excel"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
+    my $workbook = $sysvars -> {"sheet"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
 
     # If workbook is not a reference, it is an error message. Again, drop back to 0
     # as a broken upload is not recoverable at stage 1.
@@ -1277,7 +1277,7 @@ sub build_stage4_output {
                                                                   "do_headers" => $entry -> {"set_headers"},
                                                                   "do_zebra"   => 1});
 
-    $workbook = $sysvars -> {"excel"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
+    $workbook = $sysvars -> {"sheet"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
 
     # If workbook is not a reference, it is an error message. Again, drop back to 0
     # as a broken upload is not recoverable at stage 1.
@@ -1400,7 +1400,7 @@ my $template = Template -> new(basedir => path_join($settings -> {"config"} -> {
     or die_log($out -> remote_host(), "Unable to create template handling object: ".$Template::errstr);
 
 # And the excel tools object
-my $excel = ExcelTools -> new("template" => $template,
+my $sheet = SheetTools -> new("template" => $template,
                               "dbh"      => $dbh,
                               "settings" => $settings,
                               "cgi"      => $out);
@@ -1409,7 +1409,7 @@ my $content = page_display({"template" => $template,
                             "dbh"      => $dbh,
                             "settings" => $settings,
                             "cgi"      => $out,
-                            "excel"    => $excel});
+                            "sheet"    => $sheet});
 print $out -> header(-charset => 'utf-8');
 
 my $endtime = time();

@@ -1,16 +1,16 @@
 ## @file
-# This file contains the implementation of the ExcelTools class, which
-# provides a number of useful utility fonctions for dealing with excel
+# This file contains the implementation of the SheetTools class. This
+# class provides a number of useful utility fonctions for dealing with
 # workbooks and worksheets.
 #
 # @author  Chris Page &lt;chris@starforge.co.uk&gt;
-# @version 1.0
-# @date    5 Sept 2010
-# @copy    2010, Chris Page &lt;chris@starforge.co.uk&gt;
+# @version 1.2
+# @date    15 Jun 2011
+# @copy    2011, Chris Page &lt;chris@starforge.co.uk&gt;
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
+# the Free Software Foundation, either version 2 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -21,11 +21,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-## @class ExcelTools
+## @class SheetTools
 # This class provides a number of functions to simplify the loading
-# and processing of excel (xls and xlsx) files. It is
-#
-package ExcelTools;
+# and processing of excel (xls and xlsx) files and opendocument
+# spreadsheet (ods) files. Note that, despite supporting the loading of
+# ods files, this class relies heavily on the terminology used for
+# excel, in part because it was originally written for Excel files, and
+# in part because the terminology is usefully distinct.
+package SheetTools;
 
 use strict;
 use Spreadsheet::ParseExcel;
@@ -35,7 +38,7 @@ use Spreadsheet::ODSBook;
 use Utils qw(path_join);
 
 ## @cmethod $ new(%args)
-# Create a new ExcelTools object.
+# Create a new SheetTools object.
 #
 sub new {
     my $invocant = shift;
