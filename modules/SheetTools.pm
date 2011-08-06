@@ -239,6 +239,7 @@ sub mark_headers {
     # For each header listed in the database, mark the cell in the sheet appropriately
     while(my $header = $headh -> fetchrow_arrayref()) {
         my $cell = $worksheet -> get_cell($header -> [0], $header -> [1]);
+        die "Request for cell at (".$header -> [0].",".$header -> [1]."), no cell there\n" if(!$cell);
         $cell -> {"isheader"} = 1 if($cell);
     }
 }
