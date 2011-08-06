@@ -255,31 +255,33 @@ sub process_popups {
             # Get the two cells, if possible
             my $title_cell = $worksheet -> get_cell($row, $popup -> {"title_col"});
 
-            # If the title cell is in a merge, what we really want is the top left cell of the merge
-            if($title_cell -> is_merged()) {
-                my $areas = $worksheet -> get_merged_areas();
-                my $area = $areas -> [$title_cell -> {"mergearea"}];
+            if($title_cell) {
+                # If the title cell is in a merge, what we really want is the top left cell of the merge
+                if($title_cell -> is_merged()) {
+                    my $areas = $worksheet -> get_merged_areas();
+                    my $area = $areas -> [$title_cell -> {"mergearea"}];
 
-                # Get the top left cell
-                $title_cell = $worksheet -> get_cell($area -> [0], $area -> [1]);
-            }
+                    # Get the top left cell
+                    $title_cell = $worksheet -> get_cell($area -> [0], $area -> [1]);
+                }
 
-            my $body_cell  = $worksheet -> get_cell($row, $popup -> {"body_col"});
+                my $body_cell  = $worksheet -> get_cell($row, $popup -> {"body_col"});
 
-            # Don't try doing anything if we have no body cell, there's no point.
-            if($body_cell) {
-                # Mark the body cell as junk for later killing
-                $body_cell -> {"nuke"} = 1;
+                # Don't try doing anything if we have no body cell, there's no point.
+                if($body_cell) {
+                    # Mark the body cell as junk for later killing
+                    $body_cell -> {"nuke"} = 1;
 
-                # trim whitespace, so that popup bodies do not end up parsed as pre blocks in mediawiki
-                $body_cell -> {"Val"} =~ s/^\s*(.*?)\s*$/$1/;
+                    # trim whitespace, so that popup bodies do not end up parsed as pre blocks in mediawiki
+                    $body_cell -> {"Val"} =~ s/^\s*(.*?)\s*$/$1/;
 
-                # Set the popup up, provided we have a title cell with a value, and the title cell is not
-                # a header and hasn't previously been processed as a popup.
-                if($title_cell && defined($title_cell -> {"Val"}) && !$title_cell -> {"isheader"} && !$title_cell -> {"popup"} && $body_cell -> {"Val"}) {
-                    $title_cell -> {"Val"} = $formatter -> ($sysvars, $title_cell -> {"Val"}, $body_cell -> {"Val"});
-                    $body_cell -> {"Val"} = ''; # Remove the content.
-                    $title_cell -> {"popup"} = 1;
+                    # Set the popup up, provided we have a title cell with a value, and the title cell is not
+                    # a header and hasn't previously been processed as a popup.
+                    if($title_cell && defined($title_cell -> {"Val"}) && !$title_cell -> {"isheader"} && !$title_cell -> {"popup"} && $body_cell -> {"Val"}) {
+                        $title_cell -> {"Val"} = $formatter -> ($sysvars, $title_cell -> {"Val"}, $body_cell -> {"Val"});
+                        $body_cell -> {"Val"} = ''; # Remove the content.
+                        $title_cell -> {"popup"} = 1;
+                    }
                 }
             }
         }
