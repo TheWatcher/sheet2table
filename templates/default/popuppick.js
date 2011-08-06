@@ -67,8 +67,10 @@ function setColMode(col, mode, title)
     modes[col] = mode;
                 
     var element = $("pophot"+col);
-    element.setProperty('src', imgpath + modes[col] + ".png");
-    element.setProperty('title', title);
+    if(element) {
+        element.setProperty('src', imgpath + modes[col] + ".png");
+        element.setProperty('title', title);
+    }
 }
 
 
@@ -83,7 +85,7 @@ function setColRows(col, setclass)
 {
     for(var row = minrow; row <= maxrow; ++row) {
         var element = $("r"+row+"c"+col);
-        if(!element.hasClass(setclass)) element.addClass(setclass);
+        if(element && !element.hasClass(setclass)) element.addClass(setclass);
     }
 }
 
@@ -99,7 +101,7 @@ function clearColRows(col, remclass)
 {
     for(var row = minrow; row <= maxrow; ++row) {
         var element = $("r"+row+"c"+col);
-        if(element.hasClass(remclass)) element.removeClass(remclass);
+        if(element && element.hasClass(remclass)) element.removeClass(remclass);
     }
 }
 
