@@ -276,7 +276,7 @@ sub process_popups {
 
                 # Set the popup up, provided we have a title cell with a value, and the title cell is not
                 # a header and hasn't previously been processed as a popup.
-                if($title_cell && $title_cell -> {"Val"} && !$title_cell -> {"isheader"} && !$title_cell -> {"popup"} && $body_cell -> {"Val"}) {
+                if($title_cell && defined($title_cell -> {"Val"}) && !$title_cell -> {"isheader"} && !$title_cell -> {"popup"} && $body_cell -> {"Val"}) {
                     $title_cell -> {"Val"} = $formatter -> ($sysvars, $title_cell -> {"Val"}, $body_cell -> {"Val"});
                     $body_cell -> {"Val"} = ''; # Remove the content.
                     $title_cell -> {"popup"} = 1;
@@ -440,7 +440,7 @@ sub worksheet_to_html {
                 my $class = $options -> {"show_headers"} ? "sethead" : "";
                 $class .= " isanchor" if($options -> {"show_popups"} && $colmap -> {$col} -> {"type"} eq "anchor");
                 $class .= " isbody"   if($options -> {"show_popups"} && $colmap -> {$col} -> {"type"} eq "body");
-                $class .= " ishead"   if($options -> {"show_headers"} && $cell -> {"isheader"} );
+                $class .= " ishead"   if($options -> {"show_headers"} && $cell -> {"isheader"});
                 $table .= " id=\"r${row}c${col}\" ";
                 $table .= " class=\"$class\"" if($class);
             }
