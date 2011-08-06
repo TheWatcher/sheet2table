@@ -1,8 +1,11 @@
 ## @file
+# This file contains the implementation of the OpenDocument loader. It
+# relies on ODSSheet and ODSCell as part of constructing a usable
+# memory representation of the spreadsheet.
 #
 # @author  Chris Page &lt;chris@starforge.co.uk&gt;
-# @version 1.0
-# @date    12 June 2011
+# @version 1.1
+# @date    16 June 2011
 # @copy    2011, Chris Page &lt;chris@starforge.co.uk&gt;
 #
 # This program is free software: you can redistribute it and/or modify
@@ -19,7 +22,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ## @class Spreadsheet::ODSBook
-#
+# This is an implementation of a fairly basic, bare-bones OpenDocument
+# spreadsheet loader. It should be noted that the data obtained through
+# this module should be considered read-only: only muck around inside it
+# if you really know what you are doing. The interface presented by this
+# class, and the accompanying ODSSheet and ODSCell classes, is somewhat
+# contrived in that it takes on nomeclature usually used for Excel
+# workbooks and worksheets rather that the OpenDocument spreadsheet and
+# table naming. This is partially a side effect of adding support for
+# .ods loading to a system that was originally designed to load Excel
+# files (by presenting the same interface as existing Excel modules,
+# the remainder of the code could handle .ods with minimal changes), and
+# partly becasue the Excel terminology is less potentially ambiguous.
 package Spreadsheet::ODSBook;
 
 use Archive::Zip;
