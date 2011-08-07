@@ -256,6 +256,8 @@ sub process_popups {
             my $title_cell = $worksheet -> get_cell($row, $popup -> {"title_col"});
 
             if($title_cell) {
+                print STDERR "Got cell at $row, "+$popup -> {"title_col"};
+
                 # If the title cell is in a merge, what we really want is the top left cell of the merge
                 if($title_cell -> is_merged()) {
                     my $areas = $worksheet -> get_merged_areas();
@@ -263,12 +265,14 @@ sub process_popups {
 
                     # Get the top left cell
                     $title_cell = $worksheet -> get_cell($area -> [0], $area -> [1]);
+                    print STDERR "Moved to merge base at $area->[0], $area->[1]";
                 }
 
                 my $body_cell  = $worksheet -> get_cell($row, $popup -> {"body_col"});
 
                 # Don't try doing anything if we have no body cell, there's no point.
                 if($body_cell) {
+                    print STDERR "Got body at $row, "+$popup -> {"body_col"};
                     # Mark the body cell as junk for later killing
                     $body_cell -> {"nuke"} = 1;
 
