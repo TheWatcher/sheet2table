@@ -274,8 +274,18 @@ sub process_popups {
                 if($body_cell) {
                     print STDERR "Got body at $row, ".$popup -> {"body_col"};
 
+                    # If the body is a merge, we need the top-left
+                    if($body_cell -> is_merged()) {
+                        my $areas = $worksheet -> get_merged_areas();
+                        my $area = $areas -> [$body_cell -> {"mergearea"}];
+
+                        # Get the top left cell
+                        $body_cell = $worksheet -> get_cell($area -> [0], $area -> [1]);
+                        print STDERR "Moved to merge base at $area->[0], $area->[1]";
+                    }
+
                     # Are the title and body columns inside the same span area? If so, skip this popup
-                    next if($title_cell -> is_merged() && $body_cell -> is_merged() && $title_cell -> {"mergearea"} == $body_cell ->{"mergearea"});
+                    next if(defined($title_cell ->{"mergearea"}) && ($title_cell -> {"mergearea"} == $body_cell -> {"mergearea"}));
 
                     # Mark the body cell as junk for later killing
                     $body_cell -> {"nuke"} = 1;
