@@ -256,7 +256,7 @@ sub process_popups {
             my $title_cell = $worksheet -> get_cell($row, $popup -> {"title_col"});
 
             if($title_cell) {
-                print STDERR "Got cell at $row, "+$popup -> {"title_col"};
+                print STDERR "Got cell at $row, ".$popup -> {"title_col"};
 
                 # If the title cell is in a merge, what we really want is the top left cell of the merge
                 if($title_cell -> is_merged()) {
