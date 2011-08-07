@@ -272,7 +272,7 @@ sub process_popups {
 
                 # Don't try doing anything if we have no body cell, there's no point.
                 if($body_cell) {
-                    print STDERR "Got body at $row, "+$popup -> {"body_col"};
+                    print STDERR "Got body at $row, ".$popup -> {"body_col"};
                     # Mark the body cell as junk for later killing
                     $body_cell -> {"nuke"} = 1;
 
