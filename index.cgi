@@ -285,20 +285,22 @@ sub process_popups {
                     }
 
                     # Are the title and body columns inside the same span area? If so, skip this popup
-                    next if(defined($title_cell ->{"mergearea"}) && ($title_cell -> {"mergearea"} == $body_cell -> {"mergearea"}));
+                    if(defined($title_cell ->{"mergearea"}) && ($title_cell -> {"mergearea"} == $body_cell -> {"mergearea"})) {
+                        print STDERR "Skipping popup - title and body share merge";
+                    } else {
+                        # Mark the body cell as junk for later killing
+                        $body_cell -> {"nuke"} = 1;
 
-                    # Mark the body cell as junk for later killing
-                    $body_cell -> {"nuke"} = 1;
+                        # trim whitespace, so that popup bodies do not end up parsed as pre blocks in mediawiki
+                        $body_cell -> {"Val"} =~ s/^\s*(.*?)\s*$/$1/;
 
-                    # trim whitespace, so that popup bodies do not end up parsed as pre blocks in mediawiki
-                    $body_cell -> {"Val"} =~ s/^\s*(.*?)\s*$/$1/;
-
-                    # Set the popup up, provided we have a title cell with a value, and the title cell is not
-                    # a header and hasn't previously been processed as a popup.
-                    if($title_cell && defined($title_cell -> {"Val"}) && !$title_cell -> {"isheader"} && !$title_cell -> {"popup"} && $body_cell -> {"Val"}) {
-                        $title_cell -> {"Val"} = $formatter -> ($sysvars, $title_cell -> {"Val"}, $body_cell -> {"Val"});
-                        $body_cell -> {"Val"} = ''; # Remove the content.
-                        $title_cell -> {"popup"} = 1;
+                        # Set the popup up, provided we have a title cell with a value, and the title cell is not
+                        # a header and hasn't previously been processed as a popup.
+                        if($title_cell && defined($title_cell -> {"Val"}) && !$title_cell -> {"isheader"} && !$title_cell -> {"popup"} && $body_cell -> {"Val"}) {
+                            $title_cell -> {"Val"} = $formatter -> ($sysvars, $title_cell -> {"Val"}, $body_cell -> {"Val"});
+                            $body_cell -> {"Val"} = ''; # Remove the content.
+                            $title_cell -> {"popup"} = 1;
+                        }
                     }
                 }
             }
