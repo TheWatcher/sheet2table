@@ -273,6 +273,10 @@ sub process_popups {
                 # Don't try doing anything if we have no body cell, there's no point.
                 if($body_cell) {
                     print STDERR "Got body at $row, ".$popup -> {"body_col"};
+
+                    # Are the title and body columns inside the same span area? If so, skip this popup
+                    next if($title_cell -> is_merged() && $body_cell -> is_merged() && $title_cell -> {"mergearea"} == $body_cell ->{"mergearea"});
+
                     # Mark the body cell as junk for later killing
                     $body_cell -> {"nuke"} = 1;
 
