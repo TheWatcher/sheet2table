@@ -487,7 +487,7 @@ sub worksheet_to_html {
 }
 
 
-## @fn $ worksheet_to_html($sysvars, $worksheet, $options)
+## @fn $ worksheet_to_mediawiki($sysvars, $worksheet, $options)
 # Convert a worksheet to mediawiki markup, potentially including headers and popups. The valid
 # settings that can be made in the options hash are:
 #
