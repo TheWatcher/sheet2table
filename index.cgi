@@ -18,7 +18,7 @@ use Time::HiRes qw(time);
 
 # Webperl modules
 use ConfigMicro;
-use Logging qw(start_log end_log die_log);
+use Logger;
 use HTMLValidator;
 use Template;
 use Utils qw(path_join is_defined_numeric get_proc_size);
@@ -243,7 +243,7 @@ sub process_popups {
                                                FROM ".$sysvars -> {"settings"} -> {"database"} -> {"popups"}."
                                                WHERE sheetid = ?");
     $poph -> execute($id)
-        or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to perform popup lookup: ".$sysvars -> {"dbh"} -> errstr);
+        or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to perform popup lookup: ".$sysvars -> {"dbh"} -> errstr);
 
     # For each popup, go down the title column, merging in the content from the
     # body column and marking the body cell as removable. If the cell in the
@@ -325,7 +325,7 @@ sub get_popup_colmap {
                                                FROM ".$sysvars -> {"settings"} -> {"database"} -> {"popups"}."
                                                WHERE sheetid = ?");
     $poph -> execute($id)
-        or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to perform popup lookup: ".$sysvars -> {"dbh"} -> errstr);
+        or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to perform popup lookup: ".$sysvars -> {"dbh"} -> errstr);
 
     while(my $popup = $poph -> fetchrow_hashref()) {
         $pophash -> {$popup -> {"title_col"}} = {"id" => $popup -> {"popupid"},
@@ -560,7 +560,7 @@ sub get_formats {
                                                FROM ".$sysvars -> {"settings"} -> {"database"} -> {"formats"}."
                                                ORDER BY id");
     $fmth -> execute()
-        or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to perform format lookup: ".$sysvars -> {"dbh"} -> errstr);
+        or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to perform format lookup: ".$sysvars -> {"dbh"} -> errstr);
 
     while(my $format = $fmth -> fetchrow_arrayref()) {
         push(@result, $format -> [0]);
@@ -611,7 +611,7 @@ sub get_upload_data {
                                                  WHERE s.id = ?
                                                  AND s.remote_addr LIKE ?");
     $sheeth -> execute($id, $address)
-        or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to perform sheet lookup: ".$sysvars -> {"dbh"} -> errstr);
+        or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to perform sheet lookup: ".$sysvars -> {"dbh"} -> errstr);
 
     return $sheeth -> fetchrow_hashref();
 }
@@ -669,7 +669,7 @@ sub start_upload {
                                                  (source_name, local_name, file_type, set_headers, remote_addr, last_updated)
                                                  VALUES(?, ?, ?, 1, ?, UNIX_TIMESTAMP())");
     $sheeth -> execute($name, $destname, lc($ext), $sysvars -> {"cgi"} -> remote_addr())
-        or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to perform new sheet insert: ".$sysvars -> {"dbh"} -> errstr);
+        or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to perform new sheet insert: ".$sysvars -> {"dbh"} -> errstr);
 
     my $newid = $sysvars -> {"dbh"} -> {"mysql_insertid"};
     my $entry = get_upload_data($sysvars, $newid);
@@ -690,7 +690,7 @@ sub touch_sheet {
                                                 SET last_updated = UNIX_TIMESTAMP()
                                                 WHERE id = ?");
     $touch -> execute($id)
-        or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to touch sheet record. Error was: ".$sysvars -> {"dbh"} -> errstr);
+        or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to touch sheet record. Error was: ".$sysvars -> {"dbh"} -> errstr);
 }
 
 
@@ -743,7 +743,7 @@ sub set_options {
                      $args -> {"set_headers"},
                      $args -> {"set_popups"},
                      $id)
-        or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to update sheet data: ".$sysvars -> {"dbh"} -> errstr);
+        or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to update sheet data: ".$sysvars -> {"dbh"} -> errstr);
 
     return $errors;
 }
@@ -764,7 +764,7 @@ sub set_header_cells {
     my $nukeheads = $sysvars -> {"dbh"} -> prepare("DELETE FROM ".$sysvars -> {"settings"} -> {"database"} -> {"headers"}."
                                                     WHERE sheetid = ?");
     $nukeheads -> execute($id)
-        or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to remove old header data for ID $id: ".$sysvars -> {"dbh"} -> errstr);
+        or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to remove old header data for ID $id: ".$sysvars -> {"dbh"} -> errstr);
 
     # Prepare a query to shove in new entries
     my $newheads = $sysvars -> {"dbh"} -> prepare("INSERT INTO ".$sysvars -> {"settings"} -> {"database"} -> {"headers"}."
@@ -779,7 +779,7 @@ sub set_header_cells {
             my ($row, $col) = ($1, $2);
 
             $newheads -> execute($id, $col, $row)
-                or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to create new header data for ID $id: ".$sysvars -> {"dbh"} -> errstr);
+                or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to create new header data for ID $id: ".$sysvars -> {"dbh"} -> errstr);
         }
     }
 
@@ -802,7 +802,7 @@ sub set_popup_cols {
     my $nukepops = $sysvars -> {"dbh"} -> prepare("DELETE FROM ".$sysvars -> {"settings"} -> {"database"} -> {"popups"}."
                                                    WHERE sheetid = ?");
     $nukepops -> execute($id)
-        or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to remove old popup data for ID $id: ".$sysvars -> {"dbh"} -> errstr);
+        or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to remove old popup data for ID $id: ".$sysvars -> {"dbh"} -> errstr);
 
     # Prepare a query to shove in new entries
     my $newpops = $sysvars -> {"dbh"} -> prepare("INSERT INTO ".$sysvars -> {"settings"} -> {"database"} -> {"popups"}."
@@ -818,7 +818,7 @@ sub set_popup_cols {
             my ($anchor, $body) = ($1, $2);
 
             $newpops -> execute($id, $popid++, $anchor, $body)
-                or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to create new popup data for ID $id: ".$sysvars -> {"dbh"} -> errstr);
+                or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to create new popup data for ID $id: ".$sysvars -> {"dbh"} -> errstr);
         }
     }
 
@@ -843,7 +843,7 @@ sub garbage_collect {
                                                 SET value = UNIX_TIMESTAMP()
                                                 WHERE name LIKE 'last_gc'");
     $setgc -> execute()
-        or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to set gargage collect time: ".$sysvars -> {"dbh"} -> errstr);
+        or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to set gargage collect time: ".$sysvars -> {"dbh"} -> errstr);
 
     my $retainto = time() - RETAIN_TIME;
 
@@ -858,20 +858,20 @@ sub garbage_collect {
     my $oldsheets = $sysvars -> {"dbh"} -> prepare("SELECT id, local_name FROM ".$sysvars -> {"settings"} -> {"database"} -> {"sheets"}."
                                                      WHERE last_updated < ?");
     $oldsheets -> execute($retainto)
-        or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to begin garbage collect sequence: ".$sysvars -> {"dbh"} -> errstr);
+        or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to begin garbage collect sequence: ".$sysvars -> {"dbh"} -> errstr);
 
     while(my $sheet = $oldsheets -> fetchrow_hashref()) {
         $deadheads -> execute($sheet -> {"id"})
-            or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to garbage collect headers for sheet ".$sheet -> {"id"}.": ".$sysvars -> {"dbh"} -> errstr);
+            or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to garbage collect headers for sheet ".$sheet -> {"id"}.": ".$sysvars -> {"dbh"} -> errstr);
 
         $deadpops -> execute($sheet -> {"id"})
-            or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to garbage collect popups for sheet ".$sheet -> {"id"}.": ".$sysvars -> {"dbh"} -> errstr);
+            or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to garbage collect popups for sheet ".$sheet -> {"id"}.": ".$sysvars -> {"dbh"} -> errstr);
 
         unlink(path_join($sysvars -> {"settings"} -> {"config"} -> {"file_dir"}, $sheet -> {"local_name"}))
-            or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to remove file for sheet ".$sheet -> {"id"}.": $!");
+            or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to remove file for sheet ".$sheet -> {"id"}.": $!");
 
         $deadsheets -> execute($sheet -> {"id"})
-            or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to garbage collect sheet ".$sheet -> {"id"}.": ".$sysvars -> {"dbh"} -> errstr);
+            or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to garbage collect sheet ".$sheet -> {"id"}.": ".$sysvars -> {"dbh"} -> errstr);
     }
 }
 
@@ -950,7 +950,7 @@ sub valid_numeric_option {
                                                      FROM `".$args -> {"table"}."`
                                                      WHERE `".$args -> {"column"}."` = ?");
         $checkh -> execute($value)
-            or die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to perform validation lookup: ".$sysvars -> {"dbh"} -> errstr);
+            or $sysvars -> {"logger"} -> die_log($sysvars -> {"cgi"} -> remote_host(), "Unable to perform validation lookup: ".$sysvars -> {"dbh"} -> errstr);
 
         my $checkr = $checkh -> fetchrow_arrayref();
 
@@ -1400,29 +1400,34 @@ my $starttime = time();
 # Create a new CGI object to generate page content through
 my $out = CGI::Compress::Gzip -> new(\&cgi_upload_hook);
 
+# Logging please...
+my $logger = Logger -> new();
+
 # Load the system config
 my $settings = ConfigMicro -> new("config/site.cfg")
-    or die_log($out -> remote_host(), "index.cgi: Unable to obtain configuration file: ".$ConfigMicro::errstr);
+    or $logger -> die_log($out -> remote_host(), "index.cgi: Unable to obtain configuration file: ".$ConfigMicro::errstr);
 
 # Database initialisation. Errors in this will kill program.
 $dbh = DBI->connect($settings -> {"database"} -> {"database"},
                     $settings -> {"database"} -> {"username"},
                     $settings -> {"database"} -> {"password"},
                     { RaiseError => 0, AutoCommit => 1, mysql_enable_utf8 => 1 })
-    or die_log($out -> remote_host(), "index.cgi: Unable to connect to database: ".$DBI::errstr);
+    or $logger -> die_log($out -> remote_host(), "index.cgi: Unable to connect to database: ".$DBI::errstr);
 
 # Pull configuration data out of the database into the settings hash
 $settings -> load_db_config($dbh, $settings -> {"database"} -> {"settings"});
 
 # Start doing logging if needed
-start_log($settings -> {"config"} -> {"logfile"}) if($settings -> {"config"} -> {"logfile"});
+$logger -> start_log($settings -> {"config"} -> {"logfile"}) if($settings -> {"config"} -> {"logfile"});
 
 # Create the template handler object
-my $template = Template -> new(basedir => path_join($settings -> {"config"} -> {"base"}, "templates"))
-    or die_log($out -> remote_host(), "Unable to create template handling object: ".$Template::errstr);
+my $template = Template -> new(logger => $logger,
+                               basedir => path_join($settings -> {"config"} -> {"base"}, "templates"))
+    or $logger -> die_log($out -> remote_host(), "Unable to create template handling object: ".$Template::errstr);
 
 # And the excel tools object
-my $sheet = SheetTools -> new("template" => $template,
+my $sheet = SheetTools -> new("logger"   => $logger,
+                              "template" => $template,
                               "dbh"      => $dbh,
                               "settings" => $settings,
                               "cgi"      => $out);
@@ -1431,6 +1436,7 @@ my $content = page_display({"template" => $template,
                             "dbh"      => $dbh,
                             "settings" => $settings,
                             "cgi"      => $out,
+                            "logger"   => $logger,
                             "sheet"    => $sheet});
 print $out -> header(-charset => 'utf-8');
 

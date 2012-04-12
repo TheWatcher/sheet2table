@@ -234,7 +234,7 @@ sub mark_headers {
                                              FROM ".$self -> {"settings"} -> {"database"} -> {"headers"}."
                                              WHERE sheetid = ?");
     $headh -> execute($id)
-         or die_log($self -> {"cgi"} -> remote_host(), "Unable to perform popup lookup: ".$self -> {"dbh"} -> errstr);
+         or $self -> {"logger"} -> die_log($self -> {"cgi"} -> remote_host(), "Unable to perform popup lookup: ".$self -> {"dbh"} -> errstr);
 
     # For each header listed in the database, mark the cell in the sheet appropriately
     while(my $header = $headh -> fetchrow_arrayref()) {
