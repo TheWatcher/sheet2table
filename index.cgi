@@ -1029,7 +1029,7 @@ sub build_stage1_options {
     my $workbook = $sysvars -> {"sheet"} -> load_workbook($entry -> {"local_name"}, $entry -> {"file_type"});
 
     # If workbook is not a reference, it is an error message
-    return build_stage0_upload($sysvars, "Error:".$workbook) if(!ref($workbook));
+    return build_stage0_upload($sysvars, "Error:".($workbook || "-41")) if(!$workbook || !ref($workbook));
 
     my $sheetlist = $sysvars -> {"sheet"} -> get_worksheets($workbook);
     my $formatlist = get_formats($sysvars);
