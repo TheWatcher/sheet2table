@@ -27,6 +27,7 @@ use Utils qw(path_join is_defined_numeric get_proc_size);
 use SheetTools;
 
 my $dbh;                                   # global database handle, required here so that the END block can close the database connection
+my $logger;
 my $contact = 'webmaster@starforge.co.uk'; # global contact address, for error messages
 
 # install more useful error handling
@@ -47,7 +48,7 @@ END {
     $dbh -> disconnect() if($dbh);
 
     # Stop logging if it has been enabled.
-    end_log();
+    $logger -> end_log() if($logger);
 }
 
 # IDs of the stages
