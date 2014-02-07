@@ -1422,14 +1422,14 @@ $settings -> load_db_config($dbh, $settings -> {"database"} -> {"settings"});
 $logger -> start_log($settings -> {"config"} -> {"logfile"}) if($settings -> {"config"} -> {"logfile"});
 
 # Create the template handler object
-my $template = Webperl::Template -> new(logger    => $self -> {"logger"},
-                                        dbh       => $self -> {"dbh"},
-                                        cgi       => $self -> {"cgi"},
-                                        basedir   => $self -> {"settings"} -> {"config"} -> {"template_dir"} || "templates",
-                                        timefmt   => $self -> {"settings"} -> {"config"} -> {"timefmt"},
+my $template = Webperl::Template -> new(logger    => $logger,
+                                        dbh       => $dbh,
+                                        cgi       => $cgi,
+                                        basedir   => $settings -> {"config"} -> {"template_dir"} || "templates",
+                                        timefmt   => $settings -> {"config"} -> {"timefmt"},
                                         blockname => 1,
-                                        mailcmd   => '/usr/sbin/sendmail -t -f '.$self -> {"settings"} -> {"config"} -> {"Core:envelope_address"},
-                                        settings  => $self -> {"settings"}
+                                        mailcmd   => '/usr/sbin/sendmail -t -f '.$settings -> {"config"} -> {"Core:envelope_address"},
+                                        settings  => $settings)
     or $logger -> die_log($out -> remote_host(), "Unable to create template handling object: ".$Template::errstr);
 
 # And the excel tools object
