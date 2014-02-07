@@ -17,11 +17,11 @@ use MIME::Base64;
 use Time::HiRes qw(time);
 
 # Webperl modules
-use ConfigMicro;
-use Logger;
-use HTMLValidator;
-use Template;
-use Utils qw(path_join is_defined_numeric get_proc_size);
+use Webperl::ConfigMicro;
+use Webperl::Logger;
+use Webperl::HTMLValidator;
+use Webperl::Template;
+use Webperl::Utils qw(path_join is_defined_numeric get_proc_size);
 
 # local modules
 use SheetTools;
@@ -1402,10 +1402,10 @@ my $starttime = time();
 my $out = CGI::Compress::Gzip -> new(\&cgi_upload_hook);
 
 # Logging please...
-my $logger = Logger -> new();
+my $logger = Webperl::Logger -> new();
 
 # Load the system config
-my $settings = ConfigMicro -> new("config/site.cfg")
+my $settings = Webperl::ConfigMicro -> new("config/site.cfg")
     or $logger -> die_log($out -> remote_host(), "index.cgi: Unable to obtain configuration file: ".$ConfigMicro::errstr);
 
 # Database initialisation. Errors in this will kill program.
@@ -1422,8 +1422,8 @@ $settings -> load_db_config($dbh, $settings -> {"database"} -> {"settings"});
 $logger -> start_log($settings -> {"config"} -> {"logfile"}) if($settings -> {"config"} -> {"logfile"});
 
 # Create the template handler object
-my $template = Template -> new(logger => $logger,
-                               basedir => path_join($settings -> {"config"} -> {"base"}, "templates"))
+my $template = Webperl::Template -> new(logger => $logger,
+                                        basedir => path_join($settings -> {"config"} -> {"base"}, "templates"))
     or $logger -> die_log($out -> remote_host(), "Unable to create template handling object: ".$Template::errstr);
 
 # And the excel tools object
@@ -1450,4 +1450,3 @@ my $debug = $template -> load_template("debug.tem", {"***secs***"   => sprintf("
 
 print Encode::encode_utf8($template -> process_template($content, {"***debug***" => $debug}));
 $template -> set_module_obj(undef);
-
