@@ -1423,6 +1423,8 @@ $logger -> start_log($settings -> {"config"} -> {"logfile"}) if($settings -> {"c
 
 # Create the template handler object
 my $template = Webperl::Template -> new(logger => $logger,
+                                        dbh    => $dbh,
+                                        settings => $settings,
                                         basedir => path_join($settings -> {"config"} -> {"base"}, "templates"))
     or $logger -> die_log($out -> remote_host(), "Unable to create template handling object: ".$Template::errstr);
 
