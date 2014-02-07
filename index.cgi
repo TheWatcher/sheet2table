@@ -1424,7 +1424,7 @@ $logger -> start_log($settings -> {"config"} -> {"logfile"}) if($settings -> {"c
 # Create the template handler object
 my $template = Webperl::Template -> new(logger    => $logger,
                                         dbh       => $dbh,
-                                        cgi       => $cgi,
+                                        cgi       => $out,
                                         basedir   => $settings -> {"config"} -> {"template_dir"} || "templates",
                                         timefmt   => $settings -> {"config"} -> {"timefmt"},
                                         blockname => 1,
