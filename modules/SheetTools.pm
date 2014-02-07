@@ -35,7 +35,7 @@ use Spreadsheet::ParseExcel;
 use Spreadsheet::XLSX;
 use Spreadsheet::ODSBook;
 
-use Utils qw(path_join);
+use Webperl::Utils qw(path_join);
 
 ## @cmethod $ new(%args)
 # Create a new SheetTools object.
